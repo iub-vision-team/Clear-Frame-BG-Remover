@@ -1,42 +1,42 @@
-﻿# ðŸŽ¨ AI Background Remover System
+# AI Background Remover System
 
 A fully-featured Django web application that uses the **U2Net deep learning model** (via `rembg`) to automatically remove image backgrounds. Built with Django 4.2, class-based views, Bootstrap 5, and SQLite.
 
 ---
 
-## ðŸ“¸ Features
+## Features
 
-| Feature | Details |
-|---|---|
-| **AI Background Removal** | U2Net model via rembg, no manual selection needed |
-| **User Registration & Login** | Full auth system with custom registration form |
-| **Image History** | Saved per-user, paginated (9 per page) |
-| **Image Preview** | Client-side preview before upload |
-| **Download** | Download transparent PNG with one click |
-| **User Profile** | View stats, edit name/email |
-| **Admin Panel** | `/admin` with thumbnail previews |
-| **Guest Mode** | Remove backgrounds without logging in (no history saved) |
-| **Security** | CSRF, file type validation, size limit (5 MB), login-required decorators |
+| Feature                       | Details                                                                        |
+| ----------------------------- | ------------------------------------------------------------------------------ |
+| **AI Background Removal**     | U2Net model via rembg; no manual selection required                            |
+| **User Registration & Login** | Complete authentication system with a custom registration form                 |
+| **Image History**             | Saved per user and paginated (9 images per page)                               |
+| **Image Preview**             | Client-side image preview before upload                                        |
+| **Download**                  | Download transparent PNG images with one click                                 |
+| **User Profile**              | View statistics and edit name/email                                            |
+| **Admin Panel**               | `/admin` with thumbnail previews                                               |
+| **Guest Mode**                | Remove backgrounds without logging in (history is not saved)                   |
+| **Security**                  | CSRF protection, file validation, 5 MB upload limit, and login-required access |
 
 ---
 
-## ðŸ“ Project Structure
+## Project Structure
 
-```
+```text
 ai_bg_remover/
-├── ai_bg_remover/             # Django project package
-│   ├── settings.py            # Project settings
-│   ├── urls.py                # Root URL routing
+├── ai_bg_remover/
+│   ├── settings.py
+│   ├── urls.py
 │   └── wsgi.py
-├── remover/                   # Main Django app
-│   ├── models.py              # ProcessedImage model
-│   ├── views.py               # Class-based views
-│   ├── forms.py               # Upload, registration, profile forms
-│   ├── utils.py               # rembg/U2Net logic
-│   ├── urls.py                # App URL patterns
+├── remover/
+│   ├── models.py
+│   ├── views.py
+│   ├── forms.py
+│   ├── utils.py
+│   ├── urls.py
 │   ├── static/remover/css/
-│   │   └── styles.css         # App stylesheet
-│   └── templates/remover/     # App templates
+│   │   └── styles.css
+│   └── templates/remover/
 │       ├── home.html
 │       ├── register.html
 │       ├── login.html
@@ -45,8 +45,8 @@ ai_bg_remover/
 │       ├── image_detail.html
 │       └── profile.html
 ├── templates/
-│   └── base.html              # Master template, loads styles.css
-├── media/                     # User uploads
+│   └── base.html
+├── media/
 ├── manage.py
 ├── requirements.txt
 └── README.md
@@ -54,27 +54,28 @@ ai_bg_remover/
 
 ---
 
-## âš¡ Installation Guide (Step by Step)
+## Installation Guide
 
 ### Prerequisites
-- Python 3.10+ installed
-- `pip` available
-- Internet connection (to download the U2Net model weights ~170 MB on first run)
+
+* Python 3.10 or higher
+* `pip` installed
+* Internet connection for downloading the U2Net model weights (~170 MB on first use)
 
 ---
 
-### Step 1 â€” Clone / Download the Project
+### Step 1 — Clone or Download the Project
 
 ```bash
 git clone https://github.com/yourusername/ai-bg-remover.git
 cd ai-bg-remover
 ```
 
-Or if you have the zip, extract it and open a terminal inside the folder.
+Alternatively, download the ZIP file, extract it, and open a terminal in the project folder.
 
 ---
 
-### Step 2 â€” Create a Virtual Environment
+### Step 2 — Create a Virtual Environment
 
 ```bash
 # Windows
@@ -88,17 +89,17 @@ source venv/bin/activate
 
 ---
 
-### Step 3 â€” Install Dependencies
+### Step 3 — Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-> âš ï¸ **Note:** `rembg` will automatically download the U2Net model weights (~170 MB) the **first time** you process an image. This is a one-time download stored in your home directory.
+> **Note:** `rembg` automatically downloads the U2Net model weights (~170 MB) the first time an image is processed. This download happens only once and is stored in your home directory.
 
 ---
 
-### Step 4 â€” Run Database Migrations
+### Step 4 — Run Database Migrations
 
 ```bash
 python manage.py makemigrations
@@ -107,175 +108,186 @@ python manage.py migrate
 
 ---
 
-### Step 5 â€” Create a Superuser (for Admin Panel)
+### Step 5 — Create a Superuser
 
 ```bash
 python manage.py createsuperuser
-# Enter: username, email, password
 ```
+
+Enter your username, email, and password when prompted.
 
 ---
 
-### Step 6 â€” Run the Development Server
+### Step 6 — Run the Development Server
 
 ```bash
 python manage.py runserver
 ```
 
-Open your browser and go to: **http://127.0.0.1:8000**
+Open your browser and visit:
 
-Admin panel: **http://127.0.0.1:8000/admin**
-
----
-
-## ðŸ”— URL Reference
-
-| URL | View | Description |
-|---|---|---|
-| `/` | HomeView | Upload & remove background |
-| `/register/` | RegisterView | Create account |
-| `/login/` | CustomLoginView | Sign in |
-| `/logout/` | CustomLogoutView | Sign out |
-| `/dashboard/` | DashboardView | Stats & recent images *(login required)* |
-| `/history/` | HistoryView | Paginated history *(login required)* |
-| `/image/<pk>/` | ImageDetailView | View single image *(login required)* |
-| `/image/<pk>/delete/` | ImageDeleteView | Delete image *(login required)* |
-| `/profile/` | ProfileView | View/edit profile *(login required)* |
-| `/download/<path>/` | DownloadImageView | Download processed PNG |
-| `/download/saved/<pk>/` | DownloadSavedImageView | Download saved PNG *(login required)* |
-| `/admin/` | Django Admin | Manage users & images |
+* Application: `http://127.0.0.1:8000`
+* Admin Panel: `http://127.0.0.1:8000/admin`
 
 ---
 
-## ðŸ—„ï¸ Database Model
+## URL Reference
+
+| URL                     | View                   | Description                                          |
+| ----------------------- | ---------------------- | ---------------------------------------------------- |
+| `/`                     | HomeView               | Upload and remove image backgrounds                  |
+| `/register/`            | RegisterView           | Create an account                                    |
+| `/login/`               | CustomLoginView        | Sign in                                              |
+| `/logout/`              | CustomLogoutView       | Sign out                                             |
+| `/dashboard/`           | DashboardView          | View statistics and recent images (login required)   |
+| `/history/`             | HistoryView            | View paginated image history (login required)        |
+| `/image/<pk>/`          | ImageDetailView        | View a single image (login required)                 |
+| `/image/<pk>/delete/`   | ImageDeleteView        | Delete an image (login required)                     |
+| `/profile/`             | ProfileView            | View and update profile information (login required) |
+| `/download/<path>/`     | DownloadImageView      | Download a processed PNG                             |
+| `/download/saved/<pk>/` | DownloadSavedImageView | Download a saved PNG (login required)                |
+| `/admin/`               | Django Admin           | Manage users and images                              |
+
+---
+
+## Database Model
 
 ```python
 class ProcessedImage(models.Model):
-    user           = ForeignKey(User, on_delete=CASCADE)
+    user = ForeignKey(User, on_delete=CASCADE)
     original_image = ImageField(upload_to='originals/')
     processed_image = ImageField(upload_to='processed/')
-    uploaded_at    = DateTimeField(auto_now_add=True)
+    uploaded_at = DateTimeField(auto_now_add=True)
 ```
 
 ---
 
-## âš™ï¸ Settings â€” Media Configuration
+## Media Configuration
 
 ```python
 # settings.py
-MEDIA_URL  = '/media/'
+MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-MAX_UPLOAD_SIZE = 5 * 1024 * 1024          # 5 MB
+MAX_UPLOAD_SIZE = 5 * 1024 * 1024  # 5 MB
 ALLOWED_IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png']
 ```
 
 ---
 
-## ðŸ” Security Features
+## Security Features
 
-- **CSRF protection** â€” all POST forms include `{% csrf_token %}`
-- **File type validation** â€” server-side (forms.py) + client-side (JavaScript)
-- **File size limit** â€” 5 MB enforced in `ImageUploadForm.clean_image()`
-- **LoginRequiredMixin** â€” history, dashboard, profile, delete are protected
-- **User isolation** â€” `get_object_or_404(ProcessedImage, pk=pk, user=request.user)` ensures users can only access their own images
+* CSRF protection through `{% csrf_token %}`
+* Server-side and client-side file type validation
+* 5 MB upload limit enforced in `ImageUploadForm.clean_image()`
+* `LoginRequiredMixin` protects restricted pages
+* User isolation using:
+
+```python
+get_object_or_404(
+    ProcessedImage,
+    pk=pk,
+    user=request.user
+)
+```
+
+This ensures users can access only their own images.
 
 ---
 
-## ðŸ¤– How the AI Model Works (Viva Explanation)
+## How the AI Model Works (Viva Explanation)
 
 ### What is U2Net?
 
-**U2Net** stands for **U-squared Network**. It is a deep learning model designed for **Salient Object Detection** â€” detecting the most visually prominent object (foreground) in an image.
+**U2Net (U-squared Network)** is a deep learning model designed for **Salient Object Detection**, which identifies the most visually important object in an image.
 
 ### Step-by-Step AI Process
 
-```
+```text
 Input Image
-    â”‚
-    â–¼
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚  1. Pre-processing                       â”‚
-â”‚     â€¢ Resize to 320Ã—320 pixels           â”‚
-â”‚     â€¢ Normalise pixel values to [0, 1]   â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-                     â”‚
-                     â–¼
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚  2. U2Net Forward Pass                   â”‚
-â”‚     â€¢ 6 nested U-Net encoderâ€“decoder    â”‚
-â”‚       stages (RSU blocks)               â”‚
-â”‚     â€¢ Each stage extracts features at   â”‚
-â”‚       a different scale:                â”‚
-â”‚       â€“ Stage 1: Fine edges & textures  â”‚
-â”‚       â€“ Stage 6: High-level semantics   â”‚
-â”‚     â€¢ Feature maps fused via side outputâ”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-                     â”‚
-                     â–¼
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚  3. Saliency Map Output                  â”‚
-â”‚     â€¢ Each pixel gets a probability     â”‚
-â”‚       value 0.0 (background) â†’ 1.0      â”‚
-â”‚       (foreground)                      â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-                     â”‚
-                     â–¼
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚  4. Alpha Mask Application               â”‚
-â”‚     â€¢ rembg thresholds the map          â”‚
-â”‚     â€¢ Foreground pixels: alpha = 255    â”‚
-â”‚     â€¢ Background pixels: alpha = 0      â”‚
-â”‚       (fully transparent)               â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-                     â”‚
-                     â–¼
-           Output: PNG with
-           transparent background
+    |
+    v
+1. Pre-processing
+   - Resize to 320 × 320 pixels
+   - Normalize pixel values to [0,1]
+
+    |
+    v
+2. U2Net Forward Pass
+   - Six nested U-Net encoder-decoder stages
+   - Uses Residual U-blocks (RSU blocks)
+   - Extracts features at multiple scales:
+       • Fine edges and textures
+       • High-level semantic information
+   - Combines side outputs for better accuracy
+
+    |
+    v
+3. Saliency Map Generation
+   - Each pixel receives a probability score:
+       0.0 → Background
+       1.0 → Foreground
+
+    |
+    v
+4. Alpha Mask Application
+   - rembg thresholds the saliency map
+   - Foreground pixels: alpha = 255
+   - Background pixels: alpha = 0
+
+    |
+    v
+Output: PNG image with a transparent background
 ```
 
-### Key Points for Viva
+---
 
-| Question | Answer |
-|---|---|
-| What model is used? | U2Net (U-squared Network) |
-| What library? | `rembg` â€” wraps U2Net with a simple Python API |
-| What format is the output? | PNG with alpha transparency channel |
-| Is it supervised/unsupervised? | Supervised â€” trained on DUTS-TR (10,553 labelled images) |
-| What task does it solve? | Salient Object Detection / Foreground Segmentation |
-| Why U2Net over U-Net? | Nested residual U-blocks capture features at multiple scales simultaneously |
-| Where is the AI logic? | In `remover/utils.py` â€” separated from views (good design) |
-| How is it integrated? | `from rembg import remove` â€” single function call |
+## Key Viva Questions
 
-### Analogy for Viva
-> *"Think of U2Net like a team of artists looking at the same painting through different lenses â€” some look at tiny details (edges), others at the big picture (subject vs background). They all vote on each pixel, and the result is a precise mask that separates the subject from the background."*
+| Question                                 | Answer                                                   |
+| ---------------------------------------- | -------------------------------------------------------- |
+| What model is used?                      | U2Net (U-squared Network)                                |
+| What library is used?                    | `rembg`                                                  |
+| What is the output format?               | PNG with an alpha transparency channel                   |
+| Is the model supervised or unsupervised? | Supervised                                               |
+| What dataset was used?                   | DUTS-TR (10,553 labeled images)                          |
+| What task does it solve?                 | Salient Object Detection / Foreground Segmentation       |
+| Why use U2Net instead of U-Net?          | RSU blocks capture multi-scale features more effectively |
+| Where is the AI logic located?           | `remover/utils.py`                                       |
+| How is it integrated?                    | `from rembg import remove`                               |
 
 ---
 
-## ðŸ“¦ Dependencies
+## Viva Analogy
 
-| Package | Purpose |
-|---|---|
-| Django 4.2 | Web framework |
-| Pillow | Image processing in Python |
-| rembg | Background removal using U2Net |
-| onnxruntime | Runs the U2Net ONNX model efficiently |
+> "Think of U2Net as a team of artists examining the same painting through different perspectives. Some focus on tiny details such as edges, while others observe the overall subject and context. Together, they determine which pixels belong to the foreground, creating an accurate mask that separates the subject from the background."
 
 ---
 
-## ðŸš€ GitHub Submission Checklist
+## Dependencies
 
-- [x] All source files included
-- [x] `requirements.txt` present
-- [x] `README.md` with installation steps
-- [x] `.gitignore` recommended entries below
-- [x] No secret keys hardcoded (change `SECRET_KEY` for production)
-- [x] Database (`db.sqlite3`) â€” commit or exclude per your preference
-- [x] `media/` folder â€” **do not commit** user uploads
+| Package     | Purpose                                     |
+| ----------- | ------------------------------------------- |
+| Django 4.2  | Web framework                               |
+| Pillow      | Image processing                            |
+| rembg       | Background removal using U2Net              |
+| onnxruntime | Efficient execution of the U2Net ONNX model |
+
+---
+
+## GitHub Submission Checklist
+
+* [x] All source files included
+* [x] `requirements.txt` included
+* [x] `README.md` contains installation instructions
+* [x] `.gitignore` recommended entries included
+* [x] No secret keys hardcoded
+* [x] Database file (`db.sqlite3`) included or excluded as preferred
+* [x] User-uploaded media excluded from version control
 
 ### Recommended `.gitignore`
 
-```
+```text
 venv/
 __pycache__/
 *.pyc
