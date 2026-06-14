@@ -1,0 +1,111 @@
+
+{% extends "base.html" %}
+
+{% block title %}Image Detail - ClearFrame AI{% endblock %}
+
+{% block content %}
+
+<div class="d-flex align-items-center mb-4 gap-2 flex-wrap">
+  <a href="{% url 'history' %}" class="btn btn-outline-primary btn-sm">
+    <i class="bi bi-arrow-left me-1"></i>Back to History
+  </a>
+  <h4 class="fw-bold mb-0 ms-2">
+    <i class="bi bi-image me-2 text-primary"></i>Image Detail
+  </h4>
+</div>
+
+<div class="row g-4">
+
+  <!-- Original -->
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-body p-4">
+        <h6 class="fw-semibold mb-3 text-muted text-uppercase" style="font-size:.75rem;letter-spacing:.08em;">
+          <i class="bi bi-image me-1"></i>Original Image
+        </h6>
+        <div class="rounded-3 overflow-hidden mb-3" style="background:#f1f0f0;">
+          <img src="{{ image.original_image.url }}" alt="Original"
+               style="width:100%;max-height:320px;object-fit:contain;display:block;padding:8px;" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Processed -->
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-body p-4">
+        <h6 class="fw-semibold mb-3 text-muted text-uppercase" style="font-size:.75rem;letter-spacing:.08em;">
+          <i class="bi bi-magic me-1"></i>Background Removed
+        </h6>
+        {% if image.processed_image %}
+          <div class="checker-bg rounded-3 overflow-hidden mb-3">
+            <img src="{{ image.processed_image.url }}" alt="Processed"
+                 style="width:100%;max-height:320px;object-fit:contain;display:block;padding:8px;" />
+          </div>
+          <a href="{% url 'download_saved' image.pk %}" class="btn btn-primary w-100">
+            <i class="bi bi-download me-2"></i>Download Transparent PNG
+          </a>
+        {% else %}
+          <div class="text-center py-5 text-muted">
+            <i class="bi bi-exclamation-circle fs-1"></i>
+            <p class="mt-2">Processed image not available.</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% if image.predictions %}
+<div class="card mt-4">
+  <div class="card-body p-4">
+    <h6 class="fw-semibold mb-3"><i class="bi bi-robot me-2 text-primary"></i>{{ image.predictions.0.source|default:"AI" }} Predictions</h6>
+    <div class="row g-3">
+      {% for prediction in image.predictions %}
+        <div class="col-sm-4">
+          <div class="p-3 rounded-3 h-100" style="background:var(--bg-soft);border:1px solid var(--line);">
+            <p class="fw-semibold mb-1 text-truncate">{{ prediction.label }}</p>
+            <p class="small text-muted mb-0">{{ prediction.confidence }}% confidence</p>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- Metadata -->
+<div class="card mt-4">
+  <div class="card-body p-4">
+    <h6 class="fw-semibold mb-3"><i class="bi bi-info-circle me-2 text-primary"></i>Details</h6>
+    <div class="row g-3">
+      <div class="col-sm-4">
+        <p class="small text-muted mb-1">Uploaded by</p>
+        <p class="fw-semibold mb-0">{{ image.user.username }}</p>
+      </div>
+      <div class="col-sm-4">
+        <p class="small text-muted mb-1">Date &amp; Time</p>
+        <p class="fw-semibold mb-0">{{ image.uploaded_at|date:"M j, Y — g:i A" }}</p>
+      </div>
+      <div class="col-sm-4">
+        <p class="small text-muted mb-1">Original Filename</p>
+        <p class="fw-semibold mb-0 text-truncate">{{ image.original_image.name }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete -->
+<div class="mt-3 text-end">
+  <form method="post" action="{% url 'image_delete' image.pk %}"
+        onsubmit="return confirm('Permanently delete this image?')">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-outline-danger btn-sm">
+      <i class="bi bi-trash me-1"></i>Delete Record
+    </button>
+  </form>
+</div>
+
+{% endblock %}

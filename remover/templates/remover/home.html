@@ -1,0 +1,139 @@
+
+{% extends "base.html" %}
+
+{% block title %}ClearFrame AI - Remove Background{% endblock %}
+
+{% block content %}
+
+<!-- Hero -->
+<div class="text-center py-4 mb-4">
+  <h1 class="fw-bold" style="font-size:2.6rem;">
+    <span style="color:var(--primary)">ClearFrame</span> AI
+  </h1>
+  <p class="text-muted fs-5">Remove image backgrounds cleanly and export a transparent PNG.</p>
+  {% if not user.is_authenticated %}
+    <p class="small text-muted">
+      <i class="bi bi-info-circle me-1"></i>
+      <a href="{% url 'register' %}">Create an account</a> to save your image history.
+    </p>
+  {% endif %}
+</div>
+
+<div class="row g-4 justify-content-center">
+
+  <!-- Upload card -->
+  <div class="col-lg-6">
+    <div class="card h-100">
+      <div class="card-body p-4">
+        <h5 class="fw-semibold mb-3"><i class="bi bi-cloud-upload me-2 text-primary"></i>Upload for Background Removal</h5>
+
+        <form method="post" enctype="multipart/form-data" id="uploadForm" data-loading-message="Removing background...">
+          {% csrf_token %}
+
+          <!-- Drop zone -->
+          <div class="upload-zone p-4 text-center mb-3" role="button" tabindex="0">
+            <i class="bi bi-image" style="font-size:2.5rem;color:var(--primary);opacity:.7;"></i>
+            <p class="mb-1 fw-semibold mt-2">Drag &amp; drop or click to select</p>
+            <p class="small text-muted mb-0">JPG / PNG / Max 5 MB</p>
+            {{ form.image }}
+          </div>
+
+          {% if form.image.errors %}
+            <div class="text-danger small mb-2">
+              {% for error in form.image.errors %}
+                <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          <!-- Preview before upload -->
+          <div id="previewBox" class="mb-3 d-none">
+            <p class="small text-muted mb-1 fw-semibold">Preview:</p>
+            <img id="previewImg" src="" alt="preview" class="preview-img" />
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100" id="submitBtn">
+            <i class="bi bi-magic me-2"></i>Remove Background
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Result card -->
+  {% if processed_url %}
+  <div class="col-lg-6">
+    <div class="card h-100">
+      <div class="card-body p-4">
+        <h5 class="fw-semibold mb-3">
+          <i class="bi bi-check-circle-fill me-2 text-success"></i>Result
+        </h5>
+        <div class="checker-bg rounded-3 mb-3 d-flex align-items-center justify-content-center p-2" style="min-height:200px;">
+          <img src="{{ processed_url }}" alt="Processed" class="preview-img" style="max-height:280px;"/>
+        </div>
+        <div class="d-flex gap-2">
+          <a href="{% url 'download_image' processed_path %}" class="btn btn-primary flex-fill">
+            <i class="bi bi-download me-2"></i>Download PNG
+          </a>
+          {% if user.is_authenticated %}
+            <a href="{% url 'history' %}" class="btn btn-outline-primary">
+              <i class="bi bi-clock-history"></i>
+            </a>
+          {% endif %}
+        </div>
+        <p class="small text-muted mt-2 mb-0">
+          <i class="bi bi-file-earmark-image me-1"></i>
+          {{ original_name }} -> transparent background PNG
+        </p>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <!-- How it works card -->
+  <div class="col-lg-6">
+    <div class="card h-100">
+      <div class="card-body p-4">
+        <h5 class="fw-semibold mb-3"><i class="bi bi-cpu me-2 text-primary"></i>How It Works</h5>
+        <div class="d-flex align-items-start mb-3">
+          <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3 flex-shrink-0" style="width:36px;height:36px;font-size:.85rem;font-weight:700;">1</div>
+          <div>
+            <p class="mb-0 fw-semibold">Upload your image</p>
+            <p class="small text-muted mb-0">JPG or PNG, up to 5 MB</p>
+          </div>
+        </div>
+        <div class="d-flex align-items-start mb-3">
+          <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3 flex-shrink-0" style="width:36px;height:36px;font-size:.85rem;font-weight:700;">2</div>
+          <div>
+            <p class="mb-0 fw-semibold">Foreground is detected</p>
+            <p class="small text-muted mb-0">The subject is separated from the background</p>
+          </div>
+        </div>
+        <div class="d-flex align-items-start mb-3">
+          <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3 flex-shrink-0" style="width:36px;height:36px;font-size:.85rem;font-weight:700;">3</div>
+          <div>
+            <p class="mb-0 fw-semibold">Download transparent PNG</p>
+            <p class="small text-muted mb-0">Background replaced with transparency</p>
+          </div>
+        </div>
+        <hr class="my-3"/>
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+          <span class="badge rounded-pill" style="background:var(--bg-soft);color:var(--primary);border:1px solid var(--line);padding:.4rem .8rem;">
+            <i class="bi bi-lightning-fill me-1"></i>Fast
+          </span>
+          <span class="badge rounded-pill" style="background:var(--bg-soft);color:var(--primary);border:1px solid var(--line);padding:.4rem .8rem;">
+            <i class="bi bi-shield-check me-1"></i>Secure
+          </span>
+          <span class="badge rounded-pill" style="background:var(--bg-soft);color:var(--primary);border:1px solid var(--line);padding:.4rem .8rem;">
+            <i class="bi bi-image me-1"></i>PNG Output
+          </span>
+          <span class="badge rounded-pill" style="background:var(--bg-soft);color:var(--primary);border:1px solid var(--line);padding:.4rem .8rem;">
+            <i class="bi bi-stars me-1"></i>Clean Cutout
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}
